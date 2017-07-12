@@ -206,6 +206,10 @@ func (d FSReleaseDir) BuildRelease(name string, version semver.Version, force bo
 		return nil, err
 	}
 
+	if d.blobsDir.ContainsSymlinks() {
+		return nil, bosherr.Error("Execute `bosh-release` command to clean up any blobs artifacs left from using the bosh-cli v1.")
+	}
+
 	err = d.blobsDir.SyncBlobs(1)
 	if err != nil {
 		return nil, err

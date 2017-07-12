@@ -794,4 +794,45 @@ non-uploaded2.tgz:
 			}))
 		})
 	})
+
+	Describe("ContainsSymlinks", func() {
+		Context("when a symlink exists", func() {
+			It("returns true", func() {
+
+				missingFilePath := filepath.Join("/", "dir", ".blobs", "does-not-exist")
+				symlink := filepath.Join("/", "dir", "blobs", "fake-symlink")
+
+				fs.Symlink(missingFilePath, symlink)
+
+				fs.SetGlob(filepath.Join("/", "dir", "blobs", "**", "*"), []string{symlink})
+
+				fs.RegisterOpenFile(symlink, &fakesys.FakeFile{
+					Stats: &fakesys.FakeFileStats{
+						FileType:      fakesys.FakeFileTypeFile,
+						FileMode:      os.FileMode(os.ModeSymlink),
+						SymlinkTarget: missingFilePath,
+					},
+				})
+
+				Expect(blobsDir.ContainsSymlinks()).To(BeTrue())
+			})
+		})
+
+		Context("when no symlink exists", func() {
+			It("returns false", func() {
+				existingFilePath := filepath.Join("/", "dir", "blobs", "does-exist")
+
+				fs.SetGlob(filepath.Join("/", "dir", "blobs", "**", "*"), []string{existingFilePath})
+
+				fs.RegisterOpenFile(existingFilePath, &fakesys.FakeFile{
+					Stats: &fakesys.FakeFileStats{
+						FileType: fakesys.FakeFileTypeFile,
+						FileMode: os.FileMode(os.ModeDir),
+					},
+				})
+
+				Expect(blobsDir.ContainsSymlinks()).To(BeFalse())
+			})
+		})
+	})
 })

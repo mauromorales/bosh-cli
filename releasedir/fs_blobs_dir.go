@@ -300,6 +300,24 @@ func (d FSBlobsDir) UploadBlobs() error {
 	return nil
 }
 
+func (d FSBlobsDir) ContainsSymlinks() bool {
+	files, err := d.fs.RecursiveGlob(filepath.Join(d.dirPath, "**/*"))
+
+	if err != nil {
+		return false
+	}
+
+	for _, file := range files {
+		fileInfo, _ := d.fs.Lstat(file)
+
+		if fileInfo.Mode()&os.ModeSymlink != 0 {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (d FSBlobsDir) checkBlobExistence(dstPath string, digest boshcrypto.MultipleDigest) bool {
 	if d.fs.FileExists(dstPath) {
 		if err := digest.VerifyFilePath(dstPath, d.fs); err != nil {

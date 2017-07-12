@@ -73,6 +73,8 @@ type BlobsDir interface {
 
 	TrackBlob(string, io.ReadCloser) (Blob, error)
 	UntrackBlob(string) error
+
+	ContainsSymlinks() bool
 }
 
 //go:generate counterfeiter . BlobsDirReporter
