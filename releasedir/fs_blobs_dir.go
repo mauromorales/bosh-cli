@@ -99,6 +99,7 @@ func (d FSBlobsDir) Blobs() ([]Blob, error) {
 	var blobs []Blob
 
 	for recPath, rec := range schema {
+		fmt.Printf("recPath: %v %#v\n", d.dirPath, recPath)
 		blobs = append(blobs, Blob{
 			Path:        recPath,
 			Size:        rec.Size,
@@ -118,6 +119,7 @@ func (d FSBlobsDir) SyncBlobs(numOfParallelWorkers int) error {
 		return err
 	}
 
+	fmt.Printf("Enter SyncBlobs %v\n", blobs)
 	if err := d.removeUnknownBlobs(blobs); err != nil {
 		return bosherr.WrapErrorf(err, "Syncing blobs")
 	}

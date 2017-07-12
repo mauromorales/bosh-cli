@@ -8,6 +8,7 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 
+	"fmt"
 	boshjob "github.com/cloudfoundry/bosh-cli/release/job"
 	boshlic "github.com/cloudfoundry/bosh-cli/release/license"
 	boshpkg "github.com/cloudfoundry/bosh-cli/release/pkg"
@@ -131,6 +132,7 @@ func (r DirReader) newPackages(pkgMatches []string) ([]*boshpkg.Package, error) 
 	var errs []error
 
 	for _, pkgMatch := range pkgMatches {
+		fmt.Printf("direReader.newPackages %#v\n", pkgMatch)
 		info, err := r.fs.Stat(pkgMatch)
 		if err != nil {
 			errs = append(errs, bosherr.WrapErrorf(err, "Reading package from '%s'", pkgMatch))
