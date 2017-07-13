@@ -207,7 +207,7 @@ func (d FSReleaseDir) BuildRelease(name string, version semver.Version, force bo
 	}
 
 	if d.blobsDir.ContainsSymlinks() {
-		return nil, bosherr.Error("Execute `bosh-release` command to clean up any blobs artifacs left from using the bosh-cli v1.")
+		return nil, bosherr.Error("Bailing because symlinks found in blobs directory. If switching from CLI v1, please use the `reset-release` command.")
 	}
 
 	err = d.blobsDir.SyncBlobs(1)
